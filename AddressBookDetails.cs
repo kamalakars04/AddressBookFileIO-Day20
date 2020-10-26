@@ -2,13 +2,18 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
+    using System.Runtime.Serialization;
+    using System.Runtime.Serialization.Formatters.Binary;
     using System.Text;
     using NLog;
 
+    [Serializable]
     class AddressBookDetails : IAddressBook
     {
-        private readonly Logger logger = LogManager.GetCurrentClassLogger();
+        [NonSerialized]
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         string nameOfAddressBook;
 
         // Constants
@@ -22,6 +27,8 @@
         public Dictionary<string, AddressBook> addressBookList = new Dictionary<string, AddressBook>();
         public static Dictionary<string, List<ContactDetails>> cityToContactMap = new Dictionary<string, List<ContactDetails>>();
         public static Dictionary<string, List<ContactDetails>> stateToContactMap = new Dictionary<string, List<ContactDetails>>();
+        private Dictionary<string, List<ContactDetails>> cityToCOntactMapInstance;
+        private Dictionary<string, List<ContactDetails>> stateToContactMapInstance;
 
         /// <summary>
         /// Gets the address book.
@@ -386,5 +393,58 @@
             // Add the contact to list of respective city map
             stateToContactMap[stateName].Add(contact);
         }
-     }
+
+        /// <summary>
+        /// UC 13 Gets from file.
+        /// </summary>
+        /// <returns></returns>
+        public static AddressBookDetails GetFromFile()
+        {
+            FileStream stream;
+            string path = @"C:\Users\kamalakar\Desktop\bridge labs\AddressBookFileIO\PersonContacts.txt";
+            try
+            {
+                // Open the specified path
+                // If path is not found then it throws file not found exception
+                using (stream = new FileStream(path, FileMode.Open))
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+
+                    // Deserialize the data from file
+                    // If stream is null then it throws Serialization exception
+                    AddressBookDetails addressBookDetails = (AddressBookDetails)formatter.Deserialize(stream);
+
+                    // Copy the details of instance variables to static
+                    cityToContactMap = addressBookDetails.cityToCOntactMapInstance;
+                    stateToContactMap = addressBookDetails.stateToContactMapInstance;
+                    return addressBookDetails;
+                };
+            }
+            catch(FileNotFoundException)
+            {
+                Console.WriteLine("file not found");
+                return new AddressBookDetails();
+            }
+            catch(SerializationException)
+            {
+                Console.WriteLine("No previous records");
+                return new AddressBookDetails();
+            }
+        }
+
+        /// <summary>
+        /// UC 13 Writes to file.
+        /// </summary>
+        public void WriteToFile()
+        {
+            string path = @"C:\Users\kamalakar\Desktop\bridge labs\AddressBookFileIO\PersonContacts.txt";
+            FileStream stream = new FileStream(path, FileMode.OpenOrCreate);
+            BinaryFormatter formatter = new BinaryFormatter();
+
+            // Copy the details of static variables to instance to serialize them
+            cityToCOntactMapInstance = cityToContactMap;
+            stateToContactMapInstance = stateToContactMap;
+            formatter.Serialize(stream, this.MemberwiseClone());
+        }
+    }
 }

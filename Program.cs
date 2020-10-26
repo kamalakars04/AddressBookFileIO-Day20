@@ -13,6 +13,7 @@
         void DeleteAddressBook();
     }
 
+    [Serializable]
     public class Program
     {
         // Constants
@@ -34,7 +35,9 @@
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome To Address Book Program");
-            AddressBookDetails addressBookDetails = new AddressBookDetails();
+
+            // UC 13 Getting the previously stored records
+            AddressBookDetails addressBookDetails = AddressBookDetails.GetFromFile();
             bool flag = true;
             while (flag)
             {
@@ -98,12 +101,15 @@
                     case EXIT:
                         Console.WriteLine("User exited application");
                         flag = false;
-                        return;
+                        break;
                     default:
                         Console.WriteLine("Invalid entry");
                         break;
                 }
             }
+
+            // UC 13 Writing to the previously stored records.
+            addressBookDetails.WriteToFile();
         }
     }
 }
