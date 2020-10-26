@@ -19,6 +19,9 @@
         private const int UPDATE_PHONE_NUMBER = 7;
         private const int UPDATE_EMAIL = 8;
         private const string PERSON_NAME = "name";
+        private const string CITY = "city";
+        private const string STATE = "state";
+        private const string ZIP = "zip";
 
         // Variables
         private string firstName;
@@ -342,11 +345,20 @@
             List<ContactDetails> listForSorting = null;
 
             // Get the order of contacts and sort accordingly
-            Console.WriteLine("\n\nselect the sorting attribute of contacts :\n\nname\nAny other key for default order");
+            Console.WriteLine("\n\nselect the sorting attribute of contacts :\n\nname\ncity\nstate\nzip\nAny other key for default order");
             switch(Console.ReadLine().ToLower())
             {
                 case PERSON_NAME:
                     listForSorting = contactList.OrderBy(contact => (contact.firstName + contact.lastName)).ToList();
+                    break;
+                case CITY:
+                    listForSorting = contactList.OrderBy(contact => contact.city).ToList();
+                    break;
+                case ZIP:
+                    listForSorting = contactList.OrderBy(contact => contact.zip).ToList();
+                    break;
+                case STATE:
+                    listForSorting = contactList.OrderBy(contact => contact.state).ToList();
                     break;
                 default:
                     listForSorting = contactList;
