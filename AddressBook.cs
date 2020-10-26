@@ -6,6 +6,7 @@
     using System.Text;
     using NLog;
 
+    [Serializable]
     class AddressBook 
     {
         // Constants
@@ -31,7 +32,8 @@
         public string nameOfAddressBook = " ";
 
         // Object initialisation
-        private readonly Logger logger = LogManager.GetCurrentClassLogger();
+        [NonSerialized]
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         public List<ContactDetails> contactList = new List<ContactDetails>();
         
         /// <summary>
@@ -115,6 +117,7 @@
 
             // Adding contact to state dictionary
             AddressBookDetails.AddToStateDictionary(state, addNewContact);
+            Console.WriteLine("\nContact added successfully");
         }
 
         /// <summary>
