@@ -18,6 +18,7 @@
         private const int UPDATE_ZIP = 6;
         private const int UPDATE_PHONE_NUMBER = 7;
         private const int UPDATE_EMAIL = 8;
+        private const string PERSON_NAME = "name";
 
         // Variables
         private string firstName;
@@ -123,7 +124,7 @@
         /// <summary>
         /// Displays the contact details.
         /// </summary>
-        public void DisplayContactDetails()
+        public void SearchContactDetails()
         {
             // If the List doesnt have any contacts
             // Else get the name to search for details
@@ -327,7 +328,7 @@
         }
 
         /// <summary>
-        /// Gets all contacts.
+        /// UC 11 Gets all contacts.
         /// </summary>
         public void GetAllContacts()
         {
@@ -338,9 +339,21 @@
                 return;
             }
             logger.Info("User viewd all contacts");
+            List<ContactDetails> listForSorting = null;
 
+            // Get the order of contacts and sort accordingly
+            Console.WriteLine("\n\nselect the sorting attribute of contacts :\n\nname\nAny other key for default order");
+            switch(Console.ReadLine().ToLower())
+            {
+                case PERSON_NAME:
+                    listForSorting = contactList.OrderBy(contact => (contact.firstName + contact.lastName)).ToList();
+                    break;
+                default:
+                    listForSorting = contactList;
+                    break;
+            }
             // Display all contact details in list
-            contactList.ForEach(contact => contact.toString());
+            listForSorting.ForEach(contact => contact.toString());
         }
 
         /// <summary>

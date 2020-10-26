@@ -336,7 +336,7 @@
                         break;
 
                     case SEARCH_CONTACT:
-                        addressBook.DisplayContactDetails();
+                        addressBook.SearchContactDetails();
                         break;
 
                     case REMOVE_CONTACT:
