@@ -2,12 +2,16 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
     using System.Linq;
     using System.Text;
+    using CsvHelper;
+    using CsvHelper.Configuration;
     using NLog;
 
     [Serializable]
-    class AddressBook 
+    class AddressBook
     {
         // Constants
         private const int UPDATE_FIRST_NAME = 1;
@@ -39,14 +43,14 @@
         [NonSerialized]
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         public List<ContactDetails> contactList = new List<ContactDetails>();
-        
+
         /// <summary>
         /// Stores the name of address book when an object is initiated
         /// </summary>
         /// <param name="name"></param>
         public AddressBook(string name)
         {
-             nameOfAddressBook = name;
+            nameOfAddressBook = name;
         }
 
         /// <summary>
@@ -88,7 +92,7 @@
 
             // Creating an instance of contact with given details
             ContactDetails addNewContact = new ContactDetails(firstName, lastName, address, city, state, zip, phoneNumber, email, nameOfAddressBook);
-            
+
             // Checking for duplicates with the equals method
             // Loop continues till the given contact doesnt equal to any available contact
             while (addNewContact.Equals(contactList))
@@ -111,7 +115,7 @@
                 }
                 else
                     return;
-            } 
+            }
 
             // Adding the contact to list
             contactList.Add(addNewContact);
@@ -165,7 +169,7 @@
                 Console.WriteLine("No saved contacts");
                 return;
             }
-            
+
             // Input the name to be updated
             Console.WriteLine("\nEnter the name of candidate to be updated");
             string name = Console.ReadLine();
@@ -183,7 +187,7 @@
 
             // To print details of searched contact
             contact.toString();
-            
+
             int updateAttributeNum = 0;
 
             // Getting the attribute to be updated
@@ -210,15 +214,15 @@
                 case UPDATE_FIRST_NAME:
 
                     // Store the firstname of given contact in variable
-                    firstName = contact.firstName;
+                    firstName = contact.FirstName;
 
                     // Update the contact with given name
-                    contact.firstName = newValue;
+                    contact.FirstName = newValue;
 
                     // If duplicate contact exists with that name then revert the operation
                     if (contact.Equals(contactList))
                     {
-                        contact.firstName = firstName;
+                        contact.FirstName = firstName;
                         Console.WriteLine("Contact already exists with that name");
                         return;
                     }
@@ -226,52 +230,52 @@
                 case UPDATE_LAST_NAME:
 
                     // Store the LastName of given contact in variable
-                    lastName = contact.lastName;
+                    lastName = contact.LastName;
 
                     // Update the contact with given name
-                    contact.lastName = newValue;
+                    contact.LastName = newValue;
 
                     // If duplicate contact exists with that name then revert the operation
                     if (contact.Equals(contactList))
                     {
-                        contact.lastName = lastName;
+                        contact.LastName = lastName;
                         Console.WriteLine("Contact already exists with that name");
                         return;
                     }
                     break;
                 case UPDATE_ADDRESS:
-                    contact.address = newValue;
+                    contact.Address = newValue;
                     break;
                 case UPDATE_CITY:
 
                     // Remove the contact from city dictionary
-                    AddressBookDetails.cityToContactMap[contact.city].Remove(contact);
+                    AddressBookDetails.cityToContactMap[contact.City].Remove(contact);
 
                     // Update the contact city
-                    contact.city = newValue;
+                    contact.City = newValue;
 
                     // Add to city dictionary
-                    AddressBookDetails.AddToCityDictionary(contact.city, contact);
+                    AddressBookDetails.AddToCityDictionary(contact.City, contact);
                     break;
                 case UPDATE_STATE:
 
                     // Remove the contact from state dictionary
-                    AddressBookDetails.stateToContactMap[contact.state].Remove(contact);
+                    AddressBookDetails.stateToContactMap[contact.State].Remove(contact);
 
                     // Update the contact state
-                    contact.state = newValue;
+                    contact.State = newValue;
 
                     // Add to state dictionary
-                    AddressBookDetails.AddToStateDictionary(contact.state, contact); 
+                    AddressBookDetails.AddToStateDictionary(contact.State, contact);
                     break;
                 case UPDATE_ZIP:
-                    contact.zip = newValue;
+                    contact.Zip = newValue;
                     break;
                 case UPDATE_PHONE_NUMBER:
-                    contact.phoneNumber = newValue;
+                    contact.PhoneNumber = newValue;
                     break;
                 case UPDATE_EMAIL:
-                    contact.email = newValue;
+                    contact.Email = newValue;
                     break;
                 default:
                     Console.WriteLine("Invalid Entry");
@@ -292,7 +296,7 @@
                 Console.WriteLine("No saved contacts");
                 return;
             }
-            
+
             // Input the name of the contact to be removed
             Console.WriteLine("\nEnter the name of contact to be removed");
             string name = Console.ReadLine().ToLower();
@@ -318,8 +322,8 @@
             {
                 case "y":
                     contactList.Remove(contact);
-                    AddressBookDetails.cityToContactMap[contact.city].Remove(contact);
-                    AddressBookDetails.stateToContactMap[contact.state].Remove(contact);
+                    AddressBookDetails.cityToContactMap[contact.City].Remove(contact);
+                    AddressBookDetails.stateToContactMap[contact.State].Remove(contact);
                     Console.WriteLine("Contact deleted");
                     logger.Info("User removed the contact");
                     break;
@@ -346,19 +350,19 @@
 
             // Get the order of contacts and sort accordingly
             Console.WriteLine("\n\nselect the sorting attribute of contacts :\n\nname\ncity\nstate\nzip\nAny other key for default order");
-            switch(Console.ReadLine().ToLower())
+            switch (Console.ReadLine().ToLower())
             {
                 case PERSON_NAME:
-                    listForSorting = contactList.OrderBy(contact => (contact.firstName + contact.lastName)).ToList();
+                    listForSorting = contactList.OrderBy(contact => (contact.FirstName + contact.LastName)).ToList();
                     break;
                 case CITY:
-                    listForSorting = contactList.OrderBy(contact => contact.city).ToList();
+                    listForSorting = contactList.OrderBy(contact => contact.City).ToList();
                     break;
                 case ZIP:
-                    listForSorting = contactList.OrderBy(contact => contact.zip).ToList();
+                    listForSorting = contactList.OrderBy(contact => contact.Zip).ToList();
                     break;
                 case STATE:
-                    listForSorting = contactList.OrderBy(contact => contact.state).ToList();
+                    listForSorting = contactList.OrderBy(contact => contact.State).ToList();
                     break;
                 default:
                     listForSorting = contactList;
@@ -390,17 +394,17 @@
                 numOfContactsSearched++;
 
                 // If contact name matches exactly then it returns the index of that contact
-                if ((contact.firstName + " " + contact.lastName).Equals(name))
+                if ((contact.FirstName + " " + contact.LastName).Equals(name))
                     return contact;
 
                 // If a part of contact name matches then we would ask them to enter accurately
-                if ((contact.firstName + " " + contact.lastName).Contains(name))
+                if ((contact.FirstName + " " + contact.LastName).Contains(name))
                 {
                     logger.Error("Multiple contacts exists with given name");
 
                     // num of contacts having search string
-                    numOfConatctsWithNameSearched++; 
-                    Console.WriteLine("\nname of contact is {0}", contact.firstName + " " + contact.lastName);
+                    numOfConatctsWithNameSearched++;
+                    Console.WriteLine("\nname of contact is {0}", contact.FirstName + " " + contact.LastName);
                 }
 
                 // If string is not part of any name then exit
@@ -418,6 +422,36 @@
 
             // To continue search with new name
             return SearchByName(name);
+        }
+
+        /// <summary>
+        /// Can write all the contacts to a file seperately.
+        /// </summary>
+        public void WriteAddressBookToFile()
+        {
+            string filePath = @"C:\Users\kamalakar\Desktop\bridge labs\AddressBookFileIO\" + nameOfAddressBook;
+            StreamWriter sw = new StreamWriter(filePath);
+            var csv = new CsvWriter(sw, CultureInfo.InvariantCulture);
+            csv.WriteRecords(contactList);
+            sw.Flush();
+        }
+
+        /// <summary>
+        /// Reads data from csv file
+        /// </summary>
+        public void ReadAddressBookFromFile()
+        {
+            string filePath = @"C:\Users\kamalakar\Desktop\bridge labs\AddressBookFileIO\" + nameOfAddressBook;
+            StreamReader sr = new StreamReader(filePath);
+            var csvOne = new CsvReader(sr, CultureInfo.InvariantCulture);
+            csvOne.Configuration.Delimiter = ",";
+            var list = csvOne.GetRecords<ContactDetails>().ToList();
+            if (list.Count() == 0)
+            {
+                Console.WriteLine("No records found");
+                return;
+            }
+            list.ForEach(contact => contact.toString());
         }
     }
 }

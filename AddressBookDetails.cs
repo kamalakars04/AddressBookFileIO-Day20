@@ -22,6 +22,8 @@
         const string SEARCH_CONTACT = "search";
         const string REMOVE_CONTACT = "remove";
         const string GET_ALL_CONTACTS = "view";
+        const string WRITE = "write";
+        const string READ = "read";
 
         // Collection Decleration
         public Dictionary<string, AddressBook> addressBookList = new Dictionary<string, AddressBook>();
@@ -100,8 +102,8 @@
             string lastName = Console.ReadLine().ToLower();
 
             // Get the list of contacts whose city and name matches with search
-            var searchResult = cityToContactMap[cityName].FindAll(contact => contact.firstName.ToLower() == firstName
-                                                && contact.lastName.ToLower() == lastName);
+            var searchResult = cityToContactMap[cityName].FindAll(contact => contact.FirstName.ToLower() == firstName
+                                                && contact.LastName.ToLower() == lastName);
             if(searchResult.Count == 0)
             {
                 Console.WriteLine("\nNo record found");
@@ -230,8 +232,8 @@
             string lastName = Console.ReadLine().ToLower();
            
             // Get the list of contacts whose city and name matches with search
-            var searchResult = stateToContactMap[stateName].FindAll(contact => contact.firstName.ToLower() == firstName
-                                                                    && contact.lastName.ToLower() == lastName);
+            var searchResult = stateToContactMap[stateName].FindAll(contact => contact.FirstName.ToLower() == firstName
+                                                                    && contact.LastName.ToLower() == lastName);
 
             // If no contacts exist
             if (searchResult.Count() == 0)
@@ -268,11 +270,11 @@
 
                 // Remove contacts from city dictionary
                 foreach (KeyValuePair<string, List<ContactDetails>> keyValuePair in cityToContactMap)
-                    cityToContactMap[keyValuePair.Key].RemoveAll(contact => contact.nameOfAddressBook == addressBookName);
+                    cityToContactMap[keyValuePair.Key].RemoveAll(contact => contact.NameOfAddressBook == addressBookName);
 
                 // Remove contacts from state dictionary
                 foreach (KeyValuePair<string, List<ContactDetails>> keyValuePair in stateToContactMap)
-                    stateToContactMap[keyValuePair.Key].RemoveAll(contact => contact.nameOfAddressBook == addressBookName);
+                    stateToContactMap[keyValuePair.Key].RemoveAll(contact => contact.NameOfAddressBook == addressBookName);
                 Console.WriteLine("Address book deleted successfully");
                 logger.Info("User deleted the AddressBook " + nameOfAddressBook);
             }
@@ -324,7 +326,9 @@
                                   "\nUpdate- To update a contact" +
                                   "\nView - To view all contacts" +
                                   "\nRemove - To remove a contact and " +
-                                  "\nSearch- To search to get contact deatails\nE - To exit\n ");
+                                  "\nSearch- To search to get contact deatails\nWrite - To write addressbook to file" +
+                                  "\nRead - To read from file" +
+                                  "\nE - To exit\n ");
                 switch (Console.ReadLine().ToLower())
                 {
                     case ADD_CONTACT:
@@ -345,6 +349,14 @@
 
                     case GET_ALL_CONTACTS:
                         addressBook.GetAllContacts();
+                        break;
+
+                    case WRITE:
+                        addressBook.WriteAddressBookToFile();
+                        break;
+
+                    case READ:
+                        addressBook.ReadAddressBookFromFile();
                         break;
 
                     default:
