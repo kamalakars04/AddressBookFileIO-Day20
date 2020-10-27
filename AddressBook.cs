@@ -441,17 +441,24 @@
         /// </summary>
         public void ReadAddressBookFromFile()
         {
-            string filePath = @"C:\Users\kamalakar\Desktop\bridge labs\AddressBookFileIO\" + nameOfAddressBook;
-            StreamReader sr = new StreamReader(filePath);
-            var csvOne = new CsvReader(sr, CultureInfo.InvariantCulture);
-            csvOne.Configuration.Delimiter = ",";
-            var list = csvOne.GetRecords<ContactDetails>().ToList();
-            if (list.Count() == 0)
+            try
             {
-                Console.WriteLine("No records found");
-                return;
+                string filePath = @"C:\Users\kamalakar\Desktop\bridge labs\AddressBookFileIO\" + nameOfAddressBook;
+                StreamReader sr = new StreamReader(filePath);
+                var csvOne = new CsvReader(sr, CultureInfo.InvariantCulture);
+                csvOne.Configuration.Delimiter = ",";
+                var list = csvOne.GetRecords<ContactDetails>().ToList();
+                if (list.Count() == 0)
+                {
+                    Console.WriteLine("No records found");
+                    return;
+                }
+                list.ForEach(contact => contact.toString());
             }
-            list.ForEach(contact => contact.toString());
+            catch(FileNotFoundException)
+            {
+                Console.WriteLine("Write into the file to read from it.");
+            }
         }
     }
 }
