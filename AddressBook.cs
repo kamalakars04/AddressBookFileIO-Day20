@@ -425,35 +425,27 @@
         }
 
         /// <summary>
-        /// Can write all the contacts to a file seperately.
+        /// UC 13 Can write all the contacts to a file seperately.
         /// </summary>
         public void WriteAddressBookToFile()
         {
-            string filePath = @"C:\Users\kamalakar\Desktop\bridge labs\AddressBookFileIO\" + nameOfAddressBook;
-            StreamWriter sw = new StreamWriter(filePath);
-            var csv = new CsvWriter(sw, CultureInfo.InvariantCulture);
-            csv.WriteRecords(contactList);
-            sw.Flush();
+            string filePath = @"C:\Users\kamalakar\Desktop\bridge labs\AddressBookFileIO\" + nameOfAddressBook + ".txt";
+            contactList.ForEach(contact => File.WriteAllText(filePath, 
+                "FirstName : "+contact.FirstName+ " LastName : " + contact.LastName+ 
+                "Address : " + contact.Address + " City : " + contact.City+
+                "State : " + contact.State + " Zip : " + contact.Zip+
+                "Email : " + contact.Email));
         }
 
         /// <summary>
-        /// Reads data from csv file
+        /// UC 13 Reads data from csv file
         /// </summary>
         public void ReadAddressBookFromFile()
         {
             try
             {
-                string filePath = @"C:\Users\kamalakar\Desktop\bridge labs\AddressBookFileIO\" + nameOfAddressBook;
-                StreamReader sr = new StreamReader(filePath);
-                var csvOne = new CsvReader(sr, CultureInfo.InvariantCulture);
-                csvOne.Configuration.Delimiter = ",";
-                var list = csvOne.GetRecords<ContactDetails>().ToList();
-                if (list.Count() == 0)
-                {
-                    Console.WriteLine("No records found");
-                    return;
-                }
-                list.ForEach(contact => contact.toString());
+                string filePath = @"C:\Users\kamalakar\Desktop\bridge labs\AddressBookFileIO\" + nameOfAddressBook + ".txt";
+                Console.WriteLine(String.Join("\n ",File.ReadLines(filePath))); ;
             }
             catch(FileNotFoundException)
             {
