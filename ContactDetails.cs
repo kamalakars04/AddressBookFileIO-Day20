@@ -8,16 +8,20 @@
     public class ContactDetails
     {
         // Variables
-        public string firstName;
-        public string lastName;
-        public string address;
-        public string city;
-        public string state;
-        public string zip;
-        public string phoneNumber;
-        public string email;
-        public string nameOfAddressBook;
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Address { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Zip { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
+        public string NameOfAddressBook { get; set; }
 
+        public ContactDetails()
+        {
+
+        }
         /// <summary>
         /// Initializes a new instance of the <see cref="ContactDetails"/> class.
         /// </summary>
@@ -32,15 +36,15 @@
         public ContactDetails(string firstName, string lastName, string address, string city, string state, string zip, 
                                string phoneNumber, string email, string nameOfAddressBook)
         {
-            this.firstName = firstName.ToLower();
-            this.lastName = lastName.ToLower();
-            this.address = address;
-            this.city = city;
-            this.state = state;
-            this.zip = zip;
-            this.phoneNumber = phoneNumber;
-            this.email = email;
-            this.nameOfAddressBook = nameOfAddressBook;
+            this.FirstName = firstName.ToLower();
+            this.LastName = lastName.ToLower();
+            this.Address = address;
+            this.City = city;
+            this.State = state;
+            this.Zip = zip;
+            this.PhoneNumber = phoneNumber;
+            this.Email = email;
+            this.NameOfAddressBook = nameOfAddressBook;
         }
 
         /// <summary>
@@ -58,9 +62,9 @@
             try
             {
                 // Get the contacts from list with same name
-                var duplicates = ((List<ContactDetails>)obj).Find(contact => ((contact.firstName).ToLower() == (this.firstName).ToLower()
-                                                                        && (contact.lastName).ToLower() == (this.lastName).ToLower()
-                                                                        && contact.nameOfAddressBook == this.nameOfAddressBook));
+                var duplicates = ((List<ContactDetails>)obj).Find(contact => ((contact.FirstName).ToLower() == (FirstName).ToLower()
+                                                                        && (contact.LastName).ToLower() == (LastName).ToLower()
+                                                                        && contact.NameOfAddressBook == NameOfAddressBook));
 
                 // Return true if duplicate is found else false
                 if (duplicates != null)
@@ -72,9 +76,9 @@
             {
                 // Get the contacts from list with same name
                 var contact = ((ContactDetails)obj);
-                return ((contact.firstName).ToLower() == (this.firstName).ToLower()
-                        && (contact.lastName).ToLower() == (this.lastName).ToLower()
-                        && contact.nameOfAddressBook == this.nameOfAddressBook);
+                return ((contact.FirstName).ToLower() == (FirstName).ToLower()
+                        && (contact.LastName).ToLower() == (LastName).ToLower()
+                        && contact.NameOfAddressBook == NameOfAddressBook);
             }
         }
         /// <summary>
@@ -84,7 +88,7 @@
         public void toString()
         {
             // For null contact
-            if(this.nameOfAddressBook == null)
+            if(NameOfAddressBook == null)
             {
                 Console.WriteLine("No record found");
                 return;
@@ -92,15 +96,15 @@
 
             // Display all the atributes of contact
             int rowNum = 1;
-            Console.WriteLine("\nname of contact is {0}", this.firstName + " " + lastName);
-            Console.WriteLine("{0}-firstname is {1}", rowNum++, firstName);
-            Console.WriteLine("{0}-lastname is {1}", rowNum++, lastName);
-            Console.WriteLine("{0}-address is {1}", rowNum++, address);
-            Console.WriteLine("{0}-city is {1}", rowNum++, city);
-            Console.WriteLine("{0}-state is {1}", rowNum++, state);
-            Console.WriteLine("{0}-zip is {1}", rowNum++, zip);
-            Console.WriteLine("{0}-phoneNumber is {1}", rowNum++, phoneNumber);
-            Console.WriteLine("{0}-email is {1}", rowNum++, email);
+            Console.WriteLine("\nname of contact is {0}", FirstName + " " + LastName);
+            Console.WriteLine("{0}-firstname is {1}", rowNum++, FirstName);
+            Console.WriteLine("{0}-lastname is {1}", rowNum++, LastName);
+            Console.WriteLine("{0}-address is {1}", rowNum++, Address);
+            Console.WriteLine("{0}-city is {1}", rowNum++, City);
+            Console.WriteLine("{0}-state is {1}", rowNum++, State);
+            Console.WriteLine("{0}-zip is {1}", rowNum++, Zip);
+            Console.WriteLine("{0}-phoneNumber is {1}", rowNum++, PhoneNumber);
+            Console.WriteLine("{0}-email is {1}", rowNum++, Email);
         }
     }
 }
